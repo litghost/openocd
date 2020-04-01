@@ -229,6 +229,8 @@ int mem_ap_read_u32(struct adiv5_ap *ap, uint32_t address,
 	/* Use banked addressing (REG_BDx) to avoid some link traffic
 	 * (updating TAR) when reading several consecutive addresses.
 	 */
+  LOG_DEBUG("DAP: Reading AP[num=%d][address=0x%08x]", ap->ap_num, address);
+
 	retval = mem_ap_setup_transfer(ap,
 			CSW_32BIT | (ap->csw_value & CSW_ADDRINC_MASK),
 			address & 0xFFFFFFF0);
@@ -286,6 +288,8 @@ int mem_ap_write_u32(struct adiv5_ap *ap, uint32_t address,
 			address & 0xFFFFFFF0);
 	if (retval != ERROR_OK)
 		return retval;
+
+  LOG_DEBUG("DAP: Write AP[num=%d][address=0x%08x]", ap->ap_num, address);
 
 	return dap_queue_ap_write(ap, MEM_AP_REG_BD0 | (address & 0xC),
 			value);

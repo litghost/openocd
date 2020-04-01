@@ -1071,6 +1071,18 @@ COMMAND_HANDLER(handle_runtest_command)
 	return jtag_execute_queue();
 }
 
+COMMAND_HANDLER(handle_runreset_command)
+{
+	if (CMD_ARGC != 1)
+		return ERROR_COMMAND_SYNTAX_ERROR;
+
+	unsigned num_clocks;
+	COMMAND_PARSE_NUMBER(uint, CMD_ARGV[0], num_clocks);
+
+	jtag_add_runtest(num_clocks, TAP_RESET);
+	return jtag_execute_queue();
+}
+
 /*
  * For "irscan" or "drscan" commands, the "end" (really, "next") state
  * should be stable ... and *NOT* a shift state, otherwise free-running
@@ -1308,6 +1320,13 @@ static const struct command_registration jtag_command_handlers[] = {
 		.handler = handle_runtest_command,
 		.mode = COMMAND_EXEC,
 		.help = "Move to Run-Test/Idle, and issue TCK for num_cycles.",
+		.usage = "num_cycles"
+	},
+	{
+		.name = "runreset",
+		.handler = handle_runreset_command,
+		.mode = COMMAND_EXEC,
+		.help = "Move to Reset, and issue TCK for num_cycles.",
 		.usage = "num_cycles"
 	},
 	{
